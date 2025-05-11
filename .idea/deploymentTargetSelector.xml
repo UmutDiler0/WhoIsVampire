@@ -4,14 +4,17 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-04-24T11:59:19.493719800Z">
+        <DropdownSelection timestamp="2025-05-08T22:22:26.605266400Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\diler\.android\avd\Pixel_8_Pro_API_35.avd" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\diler\.android\avd\Pixel_9_Pro_API_35.avd" />
             </handle>
           </Target>
         </DropdownSelection>
         <DialogSelection />
+      </SelectionState>
+      <SelectionState runConfigName="PlayerItemPreview">
+        <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>
   </component>

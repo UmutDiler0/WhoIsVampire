@@ -10,23 +10,19 @@ object roles{
     val rolesList = mutableListOf(
         Roles(
             name = "Villager",
-            countOfRoles = 0
+            count = 0
         ),
         Roles(
             name = "Vampire",
-            countOfRoles = 0
+            count = 0
         ),
         Roles(
             name = "Seeker",
-            countOfRoles = 0
+            count = 0
         ),
         Roles(
             name = "Doctor",
-            countOfRoles = 0
-        ),
-        Roles(
-            name = "Vampire Hunter",
-            countOfRoles = 0
+            count = 0
         ),
     )
 }

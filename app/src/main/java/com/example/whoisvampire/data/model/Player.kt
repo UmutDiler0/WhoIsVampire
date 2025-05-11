@@ -8,10 +8,14 @@ import com.example.whoisvampire.R
 data class Player(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-    val name: String,
+    var name: String,
     val image: Int,
-    val role: String,
-    val isAlive: Boolean,
+    var role: String,
+    var voteCount: Int = 0,
+    var biteCount: Int = 0,
+    var selectedBy: String = "",
+    var selectCount: Int = 0,
+    var isAlive: Boolean = true,
 ){
     companion object{
         fun empty(): Player{
@@ -20,7 +24,7 @@ data class Player(
                 name = "",
                 image = R.drawable.ic_launcher_background,
                 role = "",
-                isAlive = true
+                isAlive = false
             )
         }
     }

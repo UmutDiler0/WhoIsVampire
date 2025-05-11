@@ -76,7 +76,7 @@ fun PlayerDetailScreen(
         Button(
             onClick = {
                 viewModel.updatePlayer(player.copy(name = playerName))
-                navController.navigate(Routes.NEWGAME.name)
+                navController.popBackStack()
             },
             modifier = Modifier.fillMaxWidth().padding(horizontal = 64.dp)
         ) {
@@ -86,7 +86,7 @@ fun PlayerDetailScreen(
         OutlinedButton(
             onClick = {
                 viewModel.deletePlayer(player)
-                navController.navigate(Routes.NEWGAME.name)
+                navController.popBackStack()
             },
             modifier = Modifier.fillMaxWidth().padding(horizontal = 64.dp)
         ) {

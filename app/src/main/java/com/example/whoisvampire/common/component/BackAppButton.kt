@@ -8,19 +8,21 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 
 @Composable
 fun BackAppButton(
-    onClick: () -> Unit
+    icon: ImageVector = Icons.Default.ArrowBack,
+    onClick: () -> Unit,
 ) {
    IconButton(
        onClick = onClick,
        modifier = Modifier.padding(8.dp)
    ) {
        Icon(
-           imageVector = Icons.Default.ArrowBack,
+           imageVector = icon,
            contentDescription = "Back"
        )
    }

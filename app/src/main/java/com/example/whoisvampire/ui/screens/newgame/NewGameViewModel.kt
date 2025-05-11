@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.whoisvampire.data.model.Player
 import com.example.whoisvampire.data.service.PlayerDao
+import com.example.whoisvampire.data.service.RoleDao
+import com.example.whoisvampire.data.service.SettingDao
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -12,9 +14,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NewGameViewModel @Inject constructor(
-    val playerDao: PlayerDao
+    private val playerDao: PlayerDao,
+    private val settingDao: SettingDao,
+    private val roleDao: RoleDao
 ) : ViewModel() {
-
 
     private var _playerList = MutableStateFlow<List<Player>>(
         emptyList()

@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,6 +23,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -70,8 +72,12 @@ fun RolesScreen(
             viewModel.isNavAvailable()
             val currentNavState = viewModel.isNavAvailable.value
             if (currentNavState) {
-                viewModel.insertRolesToRoom()
-                navController.navigate(Routes.GAMESETTINGS.name)
+//                viewModel.insertRolesToRoom()
+                navController.navigate(Routes.GAMESETTINGS.name) {
+                    popUpTo(Routes.ROLES.name) {
+                        inclusive = true
+                    }
+                }
             } else {
                 Toast.makeText(
                     localContext,
@@ -79,6 +85,14 @@ fun RolesScreen(
                     Toast.LENGTH_SHORT
                 ).show()
             }
+        }
+        Button(
+            onClick = {
+                viewModel.deleteAllPlayers()
+                navController.navigate(Routes.DASHBOARD.name)
+            }
+        ) {
+            Text("Oyunu sıfırla")
         }
     }
 }
@@ -104,8 +118,7 @@ fun RolesItem(
     viewModel: RolesScreenViewModel
 ){
     val roleList by viewModel.roleList.collectAsState()
-    val updatedRole = roleList.find { it.name == role.name }
-    var numberOfRole = updatedRole?.countOfRoles ?: 0
+    var roleNumber by remember { mutableStateOf(0)}
     val totalNumber by viewModel.totalRoleNumber.collectAsState()
     LaunchedEffect(totalNumber) { viewModel.isNavAvailable() }
     Column(
@@ -125,7 +138,7 @@ fun RolesItem(
                 Image(
                     painter = painterResource(R.drawable.ic_launcher_background),
                     contentDescription = "",
-                    contentScale = ContentScale.Crop
+                    contentScale = ContentScale.Crop,
                 )
                 Text(role.name)
                 Row(
@@ -134,16 +147,16 @@ fun RolesItem(
                 ) {
                     AddOrSubButton(icon = Icons.Default.KeyboardArrowDown){
 
-                        if(numberOfRole > 0) {
-                            numberOfRole--
+                        if(roleNumber > 0) {
+                            roleNumber--
                             viewModel.RemoveFromRolesList(role)
                         }
                     }
-                    Text("${numberOfRole}")
+                    Text("${roleNumber}")
                     AddOrSubButton(
                         icon = Icons.Default.KeyboardArrowUp
                     ) {
-                        numberOfRole++
+                        roleNumber++
                         viewModel.AddRoleToRolesList(role)
                     }
                 }

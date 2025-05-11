@@ -11,6 +11,7 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun NextButton(
+    buttonText: String = "Next",
     onClick: () -> Unit
 ){
     Button(
@@ -18,7 +19,7 @@ fun NextButton(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 8.dp)
     ) {
         Text(
-            text = "Next",
+            text = buttonText,
             fontSize = 24.sp
         )
     }

@@ -3,9 +3,9 @@ package com.example.whoisvampire.data.model
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity
-data class Roles(
+@Entity(tableName = "game")
+data class Game(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val name: String,
-    var count: Int
+    val dayTime: String,
+    val dayNumber: Int,
 )

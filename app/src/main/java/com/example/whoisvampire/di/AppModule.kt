@@ -42,4 +42,10 @@ object AppModule {
         appDatabase: AppDatabase
     ) = appDatabase.settingDao()
 
+    @Singleton
+    @Provides
+    fun provideGameDao(
+        appDatabase: AppDatabase
+    ) = appDatabase.gameDao()
+
 }

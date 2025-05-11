@@ -10,7 +10,7 @@ import com.example.whoisvampire.data.model.Roles
 @Dao
 interface RoleDao {
 
-    @Insert(onConflict = androidx.room.OnConflictStrategy.REPLACE)
+    @Insert
     suspend fun insertRole(role: Roles)
 
     @Delete

@@ -9,5 +9,10 @@ enum class Routes {
     ROLES,
     GAMESETTINGS,
     GAME,
-    PLAYERDETAIL
+    PLAYERDETAIL,
+    GAMEDURATION,
+    TIMERSCREEN,
+    VOTE,
+    NIGHTRESULT,
+    VOTERESULT,
 }
