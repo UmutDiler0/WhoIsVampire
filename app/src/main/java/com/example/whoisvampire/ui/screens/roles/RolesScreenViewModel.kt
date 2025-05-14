@@ -50,13 +50,21 @@ class RolesScreenViewModel @Inject constructor(
     }
 
     fun isNavAvailable(){
-        if(_gameRoleList.value.size == _roleBound.value) _isNavAvailable.value = true
+        if(_gameRoleList.value.size == _roleBound.value) {
+            var villagerCount = 0
+            var vampireCount = 0
+            _gameRoleList.value.forEach {
+                if(it.name == "Villager") villagerCount++
+                else vampireCount++
+            }
+            if(villagerCount > vampireCount) _isNavAvailable.value = true
+        }
     }
 
     fun AddRoleToRolesList(role: Roles){
         viewModelScope.launch{
             role.count++
-//            _gameRoleList.value += role
+           _gameRoleList.value += role
             roleDao.insertRole(role)
             _totalRoleNumber.value++
             isNavAvailable()
@@ -66,7 +74,7 @@ class RolesScreenViewModel @Inject constructor(
 
     fun RemoveFromRolesList(role: Roles){
         viewModelScope.launch{
-//            _gameRoleList.value -= role
+            _gameRoleList.value -= role
             role.count--
             roleDao.deleteRole(role)
             if (_totalRoleNumber.value > 0) _totalRoleNumber.value--

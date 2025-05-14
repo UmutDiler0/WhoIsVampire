@@ -1,6 +1,7 @@
 package com.example.whoisvampire.ui.screens.gamesetting
 
 import android.adservices.topics.Topic
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -28,6 +29,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.whoisvampire.common.component.BackAppButton
+import com.example.whoisvampire.common.component.BackGroundGradinet
 import com.example.whoisvampire.common.component.NextButton
 import com.example.whoisvampire.data.model.Settings
 import com.example.whoisvampire.ui.routes.Routes
@@ -40,32 +42,34 @@ fun GameSettingScreen(
     val listOfSettings by viewModel.settings.collectAsState()
     val players by viewModel.playerList.collectAsState()
     val isLoaded by viewModel.isLoaded.collectAsState()
-    if(isLoaded){
-        Column(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            BackAppButton() {
-                viewModel.deleteAllRoles()
-                navController.popBackStack()
-            }
-            Spacer(modifier = Modifier.padding(top = 32.dp))
-            TopicText("Oyun Modu")
-            GameDescText()
-            Spacer(modifier = Modifier.padding(top = 32.dp))
-            TopicText("Genel")
-            Spacer(modifier = Modifier.padding(top = 8.dp))
-            GameSettings(listOfSettings, viewModel)
-            NextButton {
-                viewModel.insertSetting()
-                navController.navigate(Routes.GAMEDURATION.name) {
-                    popUpTo(Routes.GAMESETTINGS.name) {
-                        inclusive = true
+    Box(){
+        BackGroundGradinet()
+        if (isLoaded) {
+            Column(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                BackAppButton() {
+                    viewModel.deleteAllRoles()
+                    navController.popBackStack()
+                }
+                TopicText("Oyun Modu")
+                GameDescText()
+                Spacer(modifier = Modifier.padding(top = 16.dp))
+                TopicText("Genel")
+                Spacer(modifier = Modifier.padding(top = 8.dp))
+                GameSettings(listOfSettings, viewModel)
+                NextButton {
+                    viewModel.insertSetting()
+                    navController.navigate(Routes.GAMEDURATION.name) {
+                        popUpTo(Routes.GAMESETTINGS.name) {
+                            inclusive = true
+                        }
                     }
                 }
-            }
-            LazyRow {
-                items(players) { player ->
-                    Text(player.role)
+                LazyRow {
+                    items(players) { player ->
+                        Text(player.role)
+                    }
                 }
             }
         }
@@ -93,7 +97,7 @@ fun SettingItem(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+            .padding(horizontal = 16.dp, vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(

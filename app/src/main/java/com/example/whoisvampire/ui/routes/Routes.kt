@@ -15,4 +15,5 @@ enum class Routes {
     VOTE,
     NIGHTRESULT,
     VOTERESULT,
+    ENDING,
 }

@@ -1,6 +1,7 @@
 package com.example.whoisvampire.ui.screens.nightresult
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -22,6 +23,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.whoisvampire.common.component.BackAppButton
+import com.example.whoisvampire.common.component.BackGroundGradinet
 import com.example.whoisvampire.common.component.NextButton
 import com.example.whoisvampire.data.model.Player
 import com.example.whoisvampire.ui.routes.Routes
@@ -34,25 +36,42 @@ fun NightResult(
     val isListLoaded by viewModel.isListLoaded.collectAsState()
     val playerList by viewModel.playerList.collectAsState()
     val mostBited by viewModel.mostBitedPlayer.collectAsState()
-    if(isListLoaded){
-        Column(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth()
+    var vampireCount = 0
+    var villagerCount = 0
+    playerList.forEach {
+        if(it.isAlive){
+            if(it.role == "Vampire") vampireCount++
+            else villagerCount++
+        }
+    }
+    Box{
+        BackGroundGradinet()
+        if (isListLoaded) {
+            Column(
+                modifier = Modifier.fillMaxSize()
             ) {
-                BackAppButton(
-                    icon = Icons.Default.Clear
+                Row(
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    viewModel.clearRoom()
-                    navController.navigate(Routes.DASHBOARD.name)
+                    BackAppButton(
+                        icon = Icons.Default.Clear
+                    ) {
+                        viewModel.clearRoom()
+                        navController.navigate(Routes.DASHBOARD.name)
+                    }
                 }
-            }
-            Text("Death", fontSize = 24.sp)
-            Spacer(modifier = Modifier.padding(top = 16.dp))
-            PlayerItem(mostBited)
-            NextButton {
-                navController.navigate(Routes.TIMERSCREEN.name)
+                Text("Death", fontSize = 24.sp)
+                Spacer(modifier = Modifier.padding(top = 16.dp))
+                PlayerItem(mostBited)
+                NextButton(
+                    "Next Day"
+                ) {
+                    if (villagerCount == vampireCount) {
+                        navController.navigate(Routes.ENDING.name)
+                    } else {
+                        navController.navigate(Routes.TIMERSCREEN.name)
+                    }
+                }
             }
         }
     }
@@ -63,7 +82,9 @@ fun PlayerItem(
     player: Player
 ){
     Column(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(

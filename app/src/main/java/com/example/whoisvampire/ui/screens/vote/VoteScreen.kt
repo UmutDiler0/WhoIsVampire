@@ -38,6 +38,7 @@ import androidx.navigation.NavController
 import androidx.room.util.TableInfo
 import com.example.whoisvampire.R
 import com.example.whoisvampire.common.component.BackAppButton
+import com.example.whoisvampire.common.component.BackGroundGradinet
 import com.example.whoisvampire.common.component.NextButton
 import com.example.whoisvampire.data.model.Player
 import com.example.whoisvampire.ui.routes.Routes
@@ -54,41 +55,43 @@ fun VoteScreen(
 ) {
     val viewModel: VoteViewModel = hiltViewModel()
     val playerNumber by viewModel.playerNumber.collectAsState()
-
     val isLoaded by viewModel.isListLoaded.collectAsState()
     val playerList by viewModel.newPlayerList.collectAsState()
     val player by viewModel.player.collectAsState()
     val selectedPlayer by viewModel.selectedPlayer.collectAsState()
     val voteList = playerList.filter { it.isAlive && it.id != player.id }
-    if (isLoaded) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Row(modifier = Modifier.fillMaxWidth()) {
-                BackAppButton(icon = Icons.Default.Clear) {
-                    viewModel.clearRoom()
-                    navController.navigate(Routes.DASHBOARD.name)
-                }
-            }
-            if(player.isAlive){
-                VoteInfos(
-                    player,
-                    voteList,
-                    viewModel
-                )
-            }
-
-            NextButton(
-                buttonText = "Vote"
+    Box{
+        BackGroundGradinet()
+        if (isLoaded) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                viewModel.addVote(selectedPlayer)
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    BackAppButton(icon = Icons.Default.Clear) {
+                        viewModel.clearRoom()
+                        navController.navigate(Routes.DASHBOARD.name)
+                    }
+                }
+                if (player.isAlive) {
+                    VoteInfos(
+                        player,
+                        voteList,
+                        viewModel
+                    )
+                }
 
-                if (playerNumber >= playerList.size -1 ) {
-                    viewModel.resultOfVote()
-                    navController.navigate(Routes.VOTERESULT.name)
-                } else {
-                    viewModel.addPlayerNumber()
+                NextButton(
+                    buttonText = "Vote"
+                ) {
+                    viewModel.addVote(selectedPlayer)
+
+                    if (playerNumber >= playerList.size - 1) {
+                        viewModel.resultOfVote()
+                        navController.navigate(Routes.VOTERESULT.name)
+                    } else {
+                        viewModel.addPlayerNumber()
+                    }
                 }
             }
         }
@@ -115,12 +118,6 @@ fun VoteInfos(
         modifier = Modifier
             .size(200.dp)
             .padding(16.dp)
-    )
-    Text(
-        player.role,
-        fontSize = 24.sp,
-        fontWeight = FontWeight.Bold,
-        modifier = Modifier.padding(16.dp)
     )
     PlayerList(
         playerList, viewModel

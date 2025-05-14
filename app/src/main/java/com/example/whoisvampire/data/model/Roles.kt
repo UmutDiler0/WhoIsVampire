@@ -7,5 +7,6 @@ import androidx.room.PrimaryKey
 data class Roles(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val name: String,
-    var count: Int
+    var count: Int,
+    var image: Int,
 )

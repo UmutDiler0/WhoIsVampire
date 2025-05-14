@@ -1,6 +1,7 @@
 package com.example.whoisvampire.ui.screens.gameduration
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,6 +20,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.whoisvampire.R
 import com.example.whoisvampire.common.component.BackAppButton
+import com.example.whoisvampire.common.component.BackGroundGradinet
 import com.example.whoisvampire.common.component.NextButton
 import com.example.whoisvampire.ui.routes.Routes
 
@@ -27,28 +29,31 @@ fun GameDurationScreen(
     navController: NavController
 ){
     val viewModel: GameDurationVM = hiltViewModel()
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-       Row(
-           modifier = Modifier.fillMaxWidth()
-       ) {
-            BackAppButton(icon = Icons.Default.Clear) {
-                viewModel.clearRoom()
+    Box(){
+        BackGroundGradinet()
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                BackAppButton(icon = Icons.Default.Clear) {
+                    viewModel.clearRoom()
+                }
             }
-        }
-        Text("Day 1")
-        Image(
-            painter = painterResource(R.drawable.vampir_koylu),
-            contentDescription = "",
-            modifier = Modifier.size(100.dp)
-        )
-        Text(
-            text = "asdasdasdasdasdasdasd",
-        )
-        NextButton(buttonText = "Ready") {
-            navController.navigate(Routes.GAME.name)
+            Text("Day 1")
+            Image(
+                painter = painterResource(R.drawable.vampir_koylu),
+                contentDescription = "",
+                modifier = Modifier.size(100.dp)
+            )
+            Text(
+                text = "asdasdasdasdasdasdasd",
+            )
+            NextButton(buttonText = "Ready") {
+                navController.navigate(Routes.GAME.name)
+            }
         }
     }
 }

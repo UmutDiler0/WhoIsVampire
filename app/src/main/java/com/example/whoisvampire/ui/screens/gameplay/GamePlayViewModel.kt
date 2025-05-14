@@ -1,6 +1,7 @@
 package com.example.whoisvampire.ui.screens.gameplay
 
 import androidx.compose.runtime.MutableState
+import androidx.compose.ui.semantics.Role
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -40,7 +41,6 @@ class GamePlayViewModel @Inject constructor(
 
     private val _selectedPlayer = MutableStateFlow<Player?>(null)
     val selectedPlayer: StateFlow<Player?> = _selectedPlayer
-
 
 
 

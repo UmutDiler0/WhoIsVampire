@@ -9,6 +9,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -46,7 +47,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.whoisvampire.R
+import com.example.whoisvampire.common.component.AppBarIcon
+import com.example.whoisvampire.common.component.AppScreenName
 import com.example.whoisvampire.common.component.BackAppButton
+import com.example.whoisvampire.common.component.BackGroundGradinet
 import com.example.whoisvampire.common.component.NextButton
 import com.example.whoisvampire.common.util.roles
 import com.example.whoisvampire.data.model.Roles
@@ -60,39 +64,48 @@ fun RolesScreen(
 ){
     val viewModel: RolesScreenViewModel = hiltViewModel()
     val localContext = LocalContext.current
-    Column(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        BackAppButton(){
-            navController.popBackStack()
-        }
-        RolesListView(roles.rolesList,viewModel)
-        Spacer(modifier = Modifier.padding(top = 16.dp))
-        NextButton {
-            viewModel.isNavAvailable()
-            val currentNavState = viewModel.isNavAvailable.value
-            if (currentNavState) {
-//                viewModel.insertRolesToRoom()
-                navController.navigate(Routes.GAMESETTINGS.name) {
-                    popUpTo(Routes.ROLES.name) {
-                        inclusive = true
-                    }
-                }
-            } else {
-                Toast.makeText(
-                    localContext,
-                    "Please select ${viewModel.roleBound.value} roles",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        }
-        Button(
-            onClick = {
-                viewModel.deleteAllPlayers()
-                navController.navigate(Routes.DASHBOARD.name)
-            }
+    Box{
+        BackGroundGradinet()
+        Column(
+            modifier = Modifier.fillMaxSize()
         ) {
-            Text("Oyunu sıfırla")
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                BackAppButton() {
+                    navController.popBackStack()
+                }
+                AppScreenName(Routes.ROLES.name)
+                AppBarIcon()
+            }
+            RolesListView(roles.rolesList, viewModel)
+            Spacer(modifier = Modifier.padding(top = 16.dp))
+            NextButton {
+                viewModel.isNavAvailable()
+                val currentNavState = viewModel.isNavAvailable.value
+                if (currentNavState) {
+                    navController.navigate(Routes.GAMESETTINGS.name) {
+                        popUpTo(Routes.ROLES.name) {
+                            inclusive = true
+                        }
+                    }
+                } else {
+                    Toast.makeText(
+                        localContext,
+                        "Please select ${viewModel.roleBound.value} roles",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+            Button(
+                onClick = {
+                    viewModel.deleteAllPlayers()
+                    navController.navigate(Routes.DASHBOARD.name)
+                }
+            ) {
+                Text("Oyunu sıfırla")
+            }
         }
     }
 }
@@ -136,9 +149,10 @@ fun RolesItem(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Image(
-                    painter = painterResource(R.drawable.ic_launcher_background),
+                    painter = painterResource(role.image),
                     contentDescription = "",
                     contentScale = ContentScale.Crop,
+                    modifier = Modifier.size(100.dp)
                 )
                 Text(role.name)
                 Row(

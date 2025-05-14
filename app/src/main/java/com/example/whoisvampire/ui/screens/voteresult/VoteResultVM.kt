@@ -21,6 +21,7 @@ class VoteResultVM @Inject constructor(
 ): ViewModel() {
 
     private var _playerList = MutableStateFlow<List<Player>>(emptyList())
+    val playerList: StateFlow<List<Player>> get()= _playerList
 
     private var _player = MutableStateFlow<Player>(Player.empty())
     val player: StateFlow<Player> get() = _player

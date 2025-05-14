@@ -5,6 +5,7 @@ import android.widget.ImageButton
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -30,6 +31,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.whoisvampire.common.component.BackAppButton
+import com.example.whoisvampire.common.component.BackGroundGradinet
 import com.example.whoisvampire.data.model.Player
 import com.example.whoisvampire.ui.routes.Routes
 import com.example.whoisvampire.ui.screens.gameplay.GamePlayScreen
@@ -43,21 +45,22 @@ fun GameScreen(
     val playerNumber by viewModel.playerNumber.collectAsState()
     val playerList by viewModel.playerList.collectAsState()
     val isRoomCame by viewModel.isListLoaded.collectAsState()
+    Box(){
+        BackGroundGradinet()
+        if (isRoomCame) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                BackAppButton(icon = Icons.Default.Clear) {
+                    viewModel.clearAllSetting()
+                    navController.navigate(Routes.DASHBOARD.name)
+                }
 
-
-    if (isRoomCame) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            BackAppButton(icon = Icons.Default.Clear) {
-                viewModel.clearAllSetting()
-                navController.navigate(Routes.DASHBOARD.name)
-            }
-
-            if (playerNumber < playerList.size ) {
-                PlayerTurn(
-                    player = playerList[playerNumber],
-                    navController = navController,
-                    viewModel = viewModel
-                )
+                if (playerNumber < playerList.size) {
+                    PlayerTurn(
+                        player = playerList[playerNumber],
+                        navController = navController,
+                        viewModel = viewModel
+                    )
+                }
             }
         }
     }

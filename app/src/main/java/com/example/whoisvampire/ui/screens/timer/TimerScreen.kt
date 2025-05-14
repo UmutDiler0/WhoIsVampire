@@ -1,6 +1,7 @@
 package com.example.whoisvampire.ui.screens.timer
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -27,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.whoisvampire.common.component.BackAppButton
+import com.example.whoisvampire.common.component.BackGroundGradinet
 import com.example.whoisvampire.ui.routes.Routes
 import kotlinx.coroutines.delay
 
@@ -34,19 +36,23 @@ import kotlinx.coroutines.delay
 fun TimerScreen(
     navController: NavController
 ){
+    val id = 1
     val viewModel: TimerViewModel = hiltViewModel()
-    Column(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth()
-        ){
-            BackAppButton(icon = Icons.Default.Clear) {
-                viewModel.clearRoom()
-                navController.navigate(Routes.DASHBOARD.name)
+    Box{
+        BackGroundGradinet()
+        Column(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                BackAppButton(icon = Icons.Default.Clear) {
+                    viewModel.clearRoom()
+                    navController.navigate(Routes.DASHBOARD.name)
+                }
             }
+            CountdownTimerScreen(navController)
         }
-        CountdownTimerScreen(navController)
     }
 }
 
@@ -66,7 +72,6 @@ fun CountdownTimerScreen(
             }
             isRunning.value = false
 
-            // Süre bittiğinde yönlendirme
             navController.navigate(Routes.VOTE.name)
         }
     }

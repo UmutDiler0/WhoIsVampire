@@ -43,7 +43,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.whoisvampire.R
 import com.example.whoisvampire.common.component.BackAppButton
+import com.example.whoisvampire.common.component.BackGroundGradinet
 import com.example.whoisvampire.data.model.Player
 import com.example.whoisvampire.ui.routes.Routes
 
@@ -57,24 +59,27 @@ fun GamePlayScreen(
     val player by viewModel.player.collectAsState()
     val playerList by viewModel.playerList.collectAsState()
     val isLoaded by viewModel.isListLoaded.collectAsState()
-    if(isLoaded){
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp)
+    Box{
+        BackGroundGradinet()
+        if (isLoaded) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                BackAppButton(
-                    icon = Icons.Default.Clear
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp)
                 ) {
-                    viewModel.clearRoom()
-                    navController.navigate(Routes.DASHBOARD.name)
+                    BackAppButton(
+                        icon = Icons.Default.Clear
+                    ) {
+                        viewModel.clearRoom()
+                        navController.navigate(Routes.DASHBOARD.name)
+                    }
                 }
+                PlayerInfos(player, playerList, navController, viewModel)
             }
-            PlayerInfos(player,playerList,navController,viewModel)
         }
     }
 }
@@ -92,7 +97,8 @@ fun PlayerInfos(
         modifier = Modifier.padding(16.dp)
     )
     Image(
-        painter = painterResource(player.image),
+        painter = if(player.role == "Vampire") painterResource(R.drawable.vampir)
+        else painterResource(R.drawable.villager),
         contentDescription = "",
         contentScale = ContentScale.Crop,
         modifier = Modifier
@@ -209,6 +215,15 @@ fun PlayerActionButton(
     val allPlayer by viewModel.allPlayer.collectAsState()
     val isLastPerson = allPlayer.last() == currentPlayer
     val localContext = LocalContext.current
+    val playerList by viewModel.playerList.collectAsState()
+    var vampireCount = 0
+    var villagerCount = 0
+    playerList.forEach {
+        if(it.isAlive){
+            if(it.name == "Vampire") vampireCount++
+            else villagerCount++
+        }
+    }
     if(currentPlayer.role == "Villager") viewModel.selectPlayer(Player.empty())
 
     Button(
@@ -219,6 +234,7 @@ fun PlayerActionButton(
                 if (isLastPerson) {
                     viewModel.selectedBy(currentPlayer)
                     viewModel.updateRoom(selectedPlayer!!)
+
                     navController.navigate(Routes.NIGHTRESULT.name)
 
                 } else {

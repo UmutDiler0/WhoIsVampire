@@ -39,6 +39,7 @@ class NightResultViewModel @Inject constructor(
                     playerDao.updatePlayer(player)
                 }
             }
+            _playerList.value = playerDao.getAllPlayers()
             _isListLoaded.value = true
         }
     }

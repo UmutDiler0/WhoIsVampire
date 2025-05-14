@@ -19,6 +19,7 @@ import com.example.whoisvampire.ui.routes.Routes
 import com.example.whoisvampire.ui.screens.detail.PlayerDetailScreen
 import com.example.whoisvampire.ui.screens.addplayer.AddPlayerScreen
 import com.example.whoisvampire.ui.screens.dashboard.DashBoardScreen
+import com.example.whoisvampire.ui.screens.ending.EndingScreen
 import com.example.whoisvampire.ui.screens.game.GameScreen
 import com.example.whoisvampire.ui.screens.gameduration.GameDurationScreen
 import com.example.whoisvampire.ui.screens.gameplay.GamePlayScreen
@@ -123,6 +124,9 @@ fun NavGraph(
         }
         composable(route = Routes.VOTERESULT.name) {
             VoteResult(navController)
+        }
+        composable(route = Routes.ENDING.name){
+            EndingScreen(navController)
         }
     }
 }

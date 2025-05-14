@@ -9,20 +9,25 @@ import com.example.whoisvampire.data.model.Settings
 object roles{
     val rolesList = mutableListOf(
         Roles(
-            name = "Villager",
-            count = 0
+            name = "Köylü",
+            count = 0,
+            image = R.drawable.villager
+
         ),
         Roles(
-            name = "Vampire",
-            count = 0
+            name = "Vampir",
+            count = 0,
+            image = R.drawable.vampir
         ),
         Roles(
-            name = "Seeker",
-            count = 0
+            name = "Gözcü",
+            count = 0,
+            image = R.drawable.gozcu
         ),
         Roles(
-            name = "Doctor",
-            count = 0
+            name = "Şifacı",
+            count = 0,
+            image = R.drawable.sifaci
         ),
     )
 }
@@ -53,5 +58,14 @@ object settingsList{
             name = "Show Vote Count",
             isChecked = false
         )
+    )
+}
+
+object PlayerAvatar{
+    val playerAvatar = listOf(
+        R.drawable.oyuncu1,
+        R.drawable.oyuncu2,
+        R.drawable.oyuncu3,
+        R.drawable.oyuncu4,
     )
 }
