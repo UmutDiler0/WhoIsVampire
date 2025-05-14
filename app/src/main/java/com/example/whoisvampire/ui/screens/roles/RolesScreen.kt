@@ -61,10 +61,13 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 @Composable
 fun RolesScreen(
     navController: NavController
-){
+) {
     val viewModel: RolesScreenViewModel = hiltViewModel()
     val localContext = LocalContext.current
-    Box{
+    val isNavAvailable by viewModel.isNavAvailable.collectAsState()
+    val roleBound by viewModel.roleBound.collectAsState()
+
+    Box {
         BackGroundGradinet()
         Column(
             modifier = Modifier.fillMaxSize()
@@ -73,31 +76,34 @@ fun RolesScreen(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                BackAppButton() {
+                BackAppButton(title = "Roller") {
                     navController.popBackStack()
                 }
                 AppScreenName(Routes.ROLES.name)
                 AppBarIcon()
             }
-            RolesListView(roles.rolesList, viewModel)
+
+            RolesListView(viewModel)
+
             Spacer(modifier = Modifier.padding(top = 16.dp))
+
             NextButton {
-                viewModel.isNavAvailable()
-                val currentNavState = viewModel.isNavAvailable.value
-                if (currentNavState) {
-                    navController.navigate(Routes.GAMESETTINGS.name) {
-                        popUpTo(Routes.ROLES.name) {
-                            inclusive = true
+                if (isNavAvailable) {
+                    viewModel.saveRolesToDatabase {
+                        // Kayıt tamamlandığında bu blok çalışır
+                        navController.navigate(Routes.GAMEDURATION.name) {
+                            popUpTo(Routes.ROLES.name) { inclusive = true }
                         }
                     }
                 } else {
                     Toast.makeText(
                         localContext,
-                        "Please select ${viewModel.roleBound.value} roles",
+                        "Lütfen $roleBound Rol Seçiniz ve Vampir sayısı diğerlerinden az olsun",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
             }
+
             Button(
                 onClick = {
                     viewModel.deleteAllPlayers()
@@ -112,15 +118,15 @@ fun RolesScreen(
 
 @Composable
 fun RolesListView(
-    list: List<Roles>,
     viewModel: RolesScreenViewModel
-){
+) {
+    val rolesList = roles.rolesList
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        items(list){ lokman ->
-            RolesItem(lokman,viewModel)
+        items(rolesList) { role ->
+            RolesItem(role, viewModel)
         }
     }
 }
@@ -129,11 +135,17 @@ fun RolesListView(
 fun RolesItem(
     role: Roles,
     viewModel: RolesScreenViewModel
-){
-    val roleList by viewModel.roleList.collectAsState()
-    var roleNumber by remember { mutableStateOf(0)}
+) {
+    val gameRoleList by viewModel.gameRoleList.collectAsState()
     val totalNumber by viewModel.totalRoleNumber.collectAsState()
-    LaunchedEffect(totalNumber) { viewModel.isNavAvailable() }
+
+    // İlgili rolün mevcut count bilgisini ViewModel'dan al
+    val currentCount = gameRoleList.find { it.name == role.name }?.count ?: 0
+
+    LaunchedEffect(totalNumber) {
+        viewModel.checkNavConditions()
+    }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -145,33 +157,26 @@ fun RolesItem(
                 .fillMaxWidth()
                 .padding(horizontal = 8.dp)
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Image(
                     painter = painterResource(role.image),
                     contentDescription = "",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.size(100.dp)
                 )
-                Text(role.name)
+                Text(role.name, color = Color.White)
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    AddOrSubButton(icon = Icons.Default.KeyboardArrowDown){
-
-                        if(roleNumber > 0) {
-                            roleNumber--
-                            viewModel.RemoveFromRolesList(role)
+                    AddOrSubButton(icon = Icons.Default.KeyboardArrowDown) {
+                        if (currentCount > 0) {
+                            viewModel.removeFromRolesList(role)
                         }
                     }
-                    Text("${roleNumber}")
-                    AddOrSubButton(
-                        icon = Icons.Default.KeyboardArrowUp
-                    ) {
-                        roleNumber++
-                        viewModel.AddRoleToRolesList(role)
+                    Text("$currentCount", color = Color.White)
+                    AddOrSubButton(icon = Icons.Default.KeyboardArrowUp) {
+                        viewModel.addRoleToRolesList(role)
                     }
                 }
             }
@@ -182,11 +187,11 @@ fun RolesItem(
 @Composable
 fun AddOrSubButton(
     icon: ImageVector,
-    onClick : () -> Unit,
-){
+    onClick: () -> Unit,
+) {
     IconButton(
         onClick = onClick,
-        Modifier
+        modifier = Modifier
             .background(color = Color.LightGray)
             .size(24.dp)
     ) {

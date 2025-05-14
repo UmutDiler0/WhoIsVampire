@@ -65,14 +65,12 @@ fun NewGameScreen(
             modifier = Modifier.fillMaxSize()
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                BackAppButton() {
+                BackAppButton(
+                    title = "Yeni Oyun"
+                ) {
                     navController.popBackStack()
                 }
-                AppScreenName(Routes.NEWGAME.name)
-                AppBarIcon()
             }
                 PlayerAvatarList(playerList, navController)
             Spacer(modifier = Modifier.weight(1f))
@@ -80,7 +78,7 @@ fun NewGameScreen(
                 NextButton {
                     if (playerList.size < 4) Toast.makeText(
                         context,
-                        "Game can play with at least 4 player",
+                        "Oyun En Az 4 Kişi ile Oynanabilir",
                         Toast.LENGTH_SHORT
                     ).show()
                     else navController.navigate(Routes.ROLES.name)
@@ -132,7 +130,8 @@ fun PlayerAvatar(
         )
         Text(
             player.name,
-            fontSize = 16.sp
+            fontSize = 16.sp,
+            color = Color.White
         )
     }
 }

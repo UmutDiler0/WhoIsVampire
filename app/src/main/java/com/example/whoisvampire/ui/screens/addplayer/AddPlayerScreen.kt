@@ -33,6 +33,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.whoisvampire.R
 import com.example.whoisvampire.common.component.BackAppButton
 import com.example.whoisvampire.common.component.BackGroundGradinet
+import com.example.whoisvampire.common.component.NextButton
 import com.example.whoisvampire.common.util.PlayerAvatar
 import com.example.whoisvampire.data.model.Player
 import com.example.whoisvampire.ui.routes.Routes
@@ -51,7 +52,7 @@ fun AddPlayerScreen(
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            BackAppButton() {
+            BackAppButton(title = "Oyuncu Ekle") {
                 navController.popBackStack()
             }
             Spacer(modifier = Modifier.padding(top = 32.dp))
@@ -61,7 +62,7 @@ fun AddPlayerScreen(
                 value = playerName,
                 onValueChange = { playerName = it },
                 placeholder = {
-                    Text(text = "Player Name")
+                    Text(text = "Oyuncu Adı")
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -76,24 +77,16 @@ fun AddPlayerScreen(
                 )
             )
             Spacer(modifier = Modifier.padding(top = 16.dp))
-            Button(
-                onClick = {
-                    viewModel.addPlayer(
-                        Player(
-                            name = playerName,
-                            image = randomImage,
-                            role = "",
-                            isAlive = true,
-                        )
+            NextButton(buttonText = "Kaydet") {
+                viewModel.addPlayer(
+                    Player(
+                        name = playerName,
+                        image = randomImage,
+                        role = "",
+                        isAlive = true,
                     )
-                    navController.popBackStack()
-                },
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 48.dp)
-            ) {
-                Text(
-                    text = "Save",
-                    fontSize = 16.sp
                 )
+                navController.popBackStack()
             }
 
         }

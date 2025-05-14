@@ -50,7 +50,7 @@ fun EndingScreen(
                 )
                 Text(winnerRole.name, modifier = Modifier.padding(vertical = 24.dp))
                 WinnerList(winnerList)
-                NextButton("End Game") {
+                NextButton("Yeni Oyun") {
                     viewModel.resetGame()
                     navController.navigate(Routes.DASHBOARD.name)
                 }

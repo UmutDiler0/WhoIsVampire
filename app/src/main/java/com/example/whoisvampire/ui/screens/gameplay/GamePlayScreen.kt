@@ -24,6 +24,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -37,6 +38,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -48,36 +50,34 @@ import com.example.whoisvampire.common.component.BackAppButton
 import com.example.whoisvampire.common.component.BackGroundGradinet
 import com.example.whoisvampire.data.model.Player
 import com.example.whoisvampire.ui.routes.Routes
+import com.example.whoisvampire.ui.textstyles.PrincessSofia
+import com.example.whoisvampire.ui.textstyles.Prociono
 
 @Composable
 fun GamePlayScreen(
     navController: NavController,
     id: Int,
-){
+) {
     val viewModel: GamePlayViewModel = hiltViewModel()
     LaunchedEffect(Unit) { viewModel.getPlayer(id) }
     val player by viewModel.player.collectAsState()
     val playerList by viewModel.playerList.collectAsState()
     val isLoaded by viewModel.isListLoaded.collectAsState()
-    Box{
+    Box {
         BackGroundGradinet()
         if (isLoaded) {
             Column(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 8.dp)
+                BackAppButton(
+                    icon = Icons.Default.Clear,
+                    title = player.name
                 ) {
-                    BackAppButton(
-                        icon = Icons.Default.Clear
-                    ) {
-                        viewModel.clearRoom()
-                        navController.navigate(Routes.DASHBOARD.name)
-                    }
+                    viewModel.clearRoom()
+                    navController.navigate(Routes.DASHBOARD.name)
                 }
+
                 PlayerInfos(player, playerList, navController, viewModel)
             }
         }
@@ -90,60 +90,82 @@ fun PlayerInfos(
     playerList: List<Player>,
     navController: NavController,
     viewModel: GamePlayViewModel
-){
+) {
     Text(
         player.name,
         fontSize = 24.sp,
+        color = Color.White,
+        fontFamily = Prociono,
         modifier = Modifier.padding(16.dp)
     )
     Image(
-        painter = if(player.role == "Vampire") painterResource(R.drawable.vampir)
+        painter = if (player.role == "Vampir") painterResource(R.drawable.vampir)
         else painterResource(R.drawable.villager),
         contentDescription = "",
         contentScale = ContentScale.Crop,
         modifier = Modifier
-            .size(100.dp)
+            .size(200.dp)
             .padding(16.dp)
     )
     Text(
         player.role,
-        fontSize = 12.sp,
-        fontWeight = FontWeight.Bold,
+        fontSize = 16.sp,
+        color = Color.White,
+        fontFamily = PrincessSofia,
         modifier = Modifier.padding(16.dp)
     )
     Text(
-        text = when(player.role){
-            "Villager" -> {"You Are Innocent Villager"}
-            "Vampire" -> {"Bite Someone"}
-            "Doctor" -> {"Save Someone"}
-            "Seeker" -> {"Look Someone's Role"}
-            else ->{""}
+        text = when (player.role) {
+            "Köylü" -> {
+                "Masum Bir Köylüsün Git Ve Tarlanı Biç"
+            }
+
+            "Vampir" -> {
+                "Birini Isırmalısın"
+            }
+
+            "Şifacı" -> {
+                "Birini Koru"
+            }
+
+            "Gözcü" -> {
+                "Birinin Rolünü Dikizle"
+            }
+
+            else -> {
+                ""
+            }
         },
         fontSize = 18.sp,
+        color = Color.White,
+        fontFamily = Prociono,
         modifier = Modifier.padding(8.dp)
     )
-    when(player.role){
-        "Villager" -> {
-            PlayerActionButton("Next",viewModel,navController) {
+    when (player.role) {
+        "Köylü" -> {
+            PlayerActionButton("Geç", viewModel, navController) {
                 viewModel.changeSelect()
                 navController.popBackStack()
             }
         }
-        "Vampire" -> {
-            OtherPlayersView(playerList,viewModel)
-            PlayerActionButton("Bite",viewModel,navController) {
+
+        "Vampir" -> {
+            OtherPlayersView(playerList, viewModel)
+            PlayerActionButton("Isır", viewModel, navController) {
                 navController.popBackStack()
             }
         }
-        "Seeker" -> {
-            OtherPlayersView(playerList,viewModel)
-            PlayerActionButton("See Role",viewModel,navController) {
+
+        "Gözcü" -> {
+            OtherPlayersView(playerList, viewModel)
+            PlayerActionButton("Rolü Gör", viewModel, navController) {
                 navController.popBackStack()
             }
         }
-        "Doctor" -> {
-            OtherPlayersView(playerList,viewModel)
-            PlayerActionButton("Protect",viewModel,navController) {
+
+        "Şifacı" -> {
+            OtherPlayersView(playerList, viewModel)
+            PlayerActionButton("Koru", viewModel, navController) {
                 navController.popBackStack()
             }
         }
@@ -194,11 +216,16 @@ fun OtherPlayersItem(
             Image(
                 painter = painterResource(player.image),
                 contentDescription = null,
-                modifier = Modifier.size(80.dp)
+                modifier = Modifier.size(100.dp)
             )
-            Text(player.name)
-            Text(player.role)
-            if(player.role != "Vampire" && player.selectedBy.isNotBlank()) Text(player.biteCount.toString())
+            Text(player.name, color = Color.White, fontSize = 16.sp)
+            Text(
+                if(player.role == "Vampire") player.role
+                else "",
+                color = Color.White,
+                fontSize = 16.sp
+            )
+            if (player.role != "Vampir" && player.selectedBy.isNotBlank()) Text(player.biteCount.toString())
         }
     }
 }
@@ -219,18 +246,18 @@ fun PlayerActionButton(
     var vampireCount = 0
     var villagerCount = 0
     playerList.forEach {
-        if(it.isAlive){
-            if(it.name == "Vampire") vampireCount++
+        if (it.isAlive) {
+            if (it.name == "Vampir") vampireCount++
             else villagerCount++
         }
     }
-    if(currentPlayer.role == "Villager") viewModel.selectPlayer(Player.empty())
+    if (currentPlayer.role == "Köylü") viewModel.selectPlayer(Player.empty())
 
     Button(
         onClick = {
-            if(selectedPlayer == null){
-                Toast.makeText(localContext,"Please Select player", Toast.LENGTH_SHORT).show()
-            }else{
+            if (selectedPlayer == null) {
+                Toast.makeText(localContext, "Lütfen Oyuncu Seç", Toast.LENGTH_SHORT).show()
+            } else {
                 if (isLastPerson) {
                     viewModel.selectedBy(currentPlayer)
                     viewModel.updateRoom(selectedPlayer!!)
@@ -244,9 +271,11 @@ fun PlayerActionButton(
 
                 }
             }
-        }
+        },
+        colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.button_color)),
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 64.dp)
     ) {
-        Text(buttonText)
+        Text(buttonText,color = Color.White)
     }
 }
 

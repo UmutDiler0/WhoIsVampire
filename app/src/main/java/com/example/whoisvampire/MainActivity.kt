@@ -23,7 +23,6 @@ import com.example.whoisvampire.ui.screens.ending.EndingScreen
 import com.example.whoisvampire.ui.screens.game.GameScreen
 import com.example.whoisvampire.ui.screens.gameduration.GameDurationScreen
 import com.example.whoisvampire.ui.screens.gameplay.GamePlayScreen
-import com.example.whoisvampire.ui.screens.gamesetting.GameSettingScreen
 import com.example.whoisvampire.ui.screens.newgame.NewGameScreen
 import com.example.whoisvampire.ui.screens.nightresult.NightResult
 import com.example.whoisvampire.ui.screens.roles.RolesScreen
@@ -86,9 +85,6 @@ fun NavGraph(
         }
         composable(route = Routes.ROLES.name){
             RolesScreen(navController)
-        }
-        composable(route = Routes.GAMESETTINGS.name){
-            GameSettingScreen(navController)
         }
         composable(
             route = Routes.PLAYERDETAIL.name + "/{id}",

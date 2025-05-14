@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -21,15 +22,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.whoisvampire.R
 import com.example.whoisvampire.common.component.BackAppButton
 import com.example.whoisvampire.common.component.BackGroundGradinet
 import com.example.whoisvampire.ui.routes.Routes
+import com.example.whoisvampire.ui.textstyles.Prociono
 import kotlinx.coroutines.delay
 
 @Composable
@@ -46,11 +51,18 @@ fun TimerScreen(
             Row(
                 modifier = Modifier.fillMaxWidth()
             ) {
-                BackAppButton(icon = Icons.Default.Clear) {
+                BackAppButton(icon = Icons.Default.Clear, title = "Mahkeme") {
                     viewModel.clearRoom()
                     navController.navigate(Routes.DASHBOARD.name)
                 }
             }
+            Text(
+                "Sessizlik bir anda bozuldu, köy meydanında fısıldanan şüpheler bir araya geldi. Gözler birbirine yöneldi, parmaklar suçlamalarla işaretlendi. Artık sessiz kalmak, bir suç sayılırdı. Tartışma zamanıydı.",
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                color = Color.White,
+                fontSize = 16.sp,
+                fontFamily = Prociono
+                )
             CountdownTimerScreen(navController)
         }
     }
@@ -87,7 +99,7 @@ fun CountdownTimerScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = formattedTime, fontSize = 48.sp, fontWeight = FontWeight.Bold)
+        Text(text = formattedTime, fontSize = 64.sp, fontWeight = FontWeight.Bold, color = Color.White)
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -96,14 +108,22 @@ fun CountdownTimerScreen(
                 timeLeftInMillis = 2 * 60 * 1000L // Reset timer
                 isRunning.value = true
             }
-        }) {
-            Text("Start Timer")
+        },
+            colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.button_color)),
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 32.dp)
+        ) {
+            Text("Mahkemeyi Başlat", color = Color.White, fontSize = 18.sp)
         }
+        Spacer(modifier = Modifier.padding(32.dp))
         Button(
-            onClick = {navController.navigate(Routes.VOTE.name +  "/$id")}
+            onClick = {navController.navigate(Routes.VOTE.name +  "/$id")},
+            colors = ButtonDefaults.buttonColors(containerColor = Color.White),
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 32.dp)
         ) {
             Text(
-                "End Vote"
+                "Mahkemeyi Bitir",
+                fontSize = 18.sp,
+                color = colorResource(R.color.button_color)
             )
         }
     }

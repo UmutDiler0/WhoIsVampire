@@ -4,13 +4,17 @@ import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.whoisvampire.common.util.roles
+import com.example.whoisvampire.data.model.Player
 import com.example.whoisvampire.data.model.Roles
 import com.example.whoisvampire.data.service.PlayerDao
 import com.example.whoisvampire.data.service.RoleDao
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.forEach
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -23,8 +27,13 @@ class RolesScreenViewModel @Inject constructor(
     private var _rolesList = MutableStateFlow<List<Roles>>(roles.rolesList)
     val roleList: StateFlow<List<Roles>> get() = _rolesList
 
+    private var _gameRoleList = MutableStateFlow<List<Roles>>(emptyList())
+    val gameRoleList: StateFlow<List<Roles>> get() = _gameRoleList
+
     private var _totalRoleNumber = MutableStateFlow<Int>(0)
-    val totalRoleNumber: StateFlow<Int> get() = _totalRoleNumber
+    val totalRoleNumber: StateFlow<Int> = _gameRoleList.map { list ->
+        list.sumOf { it.count }
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, 0)
 
     private var _roleBound = MutableStateFlow<Int>(0)
     val roleBound: StateFlow<Int> get() = _roleBound
@@ -32,12 +41,11 @@ class RolesScreenViewModel @Inject constructor(
     private var _isNavAvailable = MutableStateFlow<Boolean>(false)
     val isNavAvailable: StateFlow<Boolean> get() = _isNavAvailable
 
-    private var _gameRoleList = MutableStateFlow<List<Roles>>(emptyList())
-    val gameRoleList: StateFlow<List<Roles>> get() = _gameRoleList
-
+    private var _playerList = MutableStateFlow<List<Player>>(emptyList())
 
     init {
         viewModelScope.launch {
+            _playerList.value = playerDao.getAllPlayers()
             _roleBound.value = playerDao.getAllPlayers().size
         }
     }
@@ -49,36 +57,64 @@ class RolesScreenViewModel @Inject constructor(
         }
     }
 
-    fun isNavAvailable(){
-        if(_gameRoleList.value.size == _roleBound.value) {
-            var villagerCount = 0
-            var vampireCount = 0
-            _gameRoleList.value.forEach {
-                if(it.name == "Villager") villagerCount++
-                else vampireCount++
+
+
+    fun checkNavConditions() {
+        val playerCount = _playerList.value.size
+        val currentList = _gameRoleList.value
+        val totalRoles = currentList.sumOf { it.count }
+        val vampirCount = currentList.find { it.name.equals("Vampir", ignoreCase = true) }?.count ?: 0
+        val othersCount = totalRoles - vampirCount
+
+        _isNavAvailable.value = vampirCount < othersCount && totalRoles == playerCount
+    }
+
+    fun saveRolesToDatabase(onComplete: () -> Unit = {}) {
+        viewModelScope.launch {
+            roleDao.deleteAllRoles()
+
+            _gameRoleList.value.forEach { role ->
+                if (role.count > 0) {
+                    repeat(role.count) {
+                        roleDao.insertRole(role.copy(count = 1))
+                    }
+                }
             }
-            if(villagerCount > vampireCount) _isNavAvailable.value = true
+
+            onComplete()
         }
     }
 
-    fun AddRoleToRolesList(role: Roles){
-        viewModelScope.launch{
-            role.count++
-           _gameRoleList.value += role
-            roleDao.insertRole(role)
-            _totalRoleNumber.value++
-            isNavAvailable()
-        }
+    fun addRoleToRolesList(role: Roles) {
+        viewModelScope.launch {
+            val updatedList = _gameRoleList.value.toMutableList()
+            val index = updatedList.indexOfFirst { it.name == role.name }
 
+            if (index != -1) {
+                updatedList[index] = updatedList[index].copy(count = updatedList[index].count + 1)
+            } else {
+                updatedList.add(role.copy(count = 1))
+            }
+            _gameRoleList.value = updatedList
+            checkNavConditions()
+        }
     }
 
-    fun RemoveFromRolesList(role: Roles){
-        viewModelScope.launch{
-            _gameRoleList.value -= role
-            role.count--
-            roleDao.deleteRole(role)
-            if (_totalRoleNumber.value > 0) _totalRoleNumber.value--
-            isNavAvailable()
+    fun removeFromRolesList(role: Roles) {
+        viewModelScope.launch {
+            val updatedList = _gameRoleList.value.toMutableList()
+            val index = updatedList.indexOfFirst { it.name == role.name }
+
+            if (index != -1) {
+                val current = updatedList[index]
+                if (current.count > 1) {
+                    updatedList[index] = current.copy(count = current.count - 1)
+                } else {
+                    updatedList.removeAt(index)
+                }
+            }
+            _gameRoleList.value = updatedList
+            checkNavConditions()
         }
     }
 

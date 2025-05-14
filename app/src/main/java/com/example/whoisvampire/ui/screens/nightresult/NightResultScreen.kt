@@ -16,7 +16,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -27,6 +29,7 @@ import com.example.whoisvampire.common.component.BackGroundGradinet
 import com.example.whoisvampire.common.component.NextButton
 import com.example.whoisvampire.data.model.Player
 import com.example.whoisvampire.ui.routes.Routes
+import com.example.whoisvampire.ui.textstyles.Prociono
 
 @Composable
 fun NightResult(
@@ -54,17 +57,25 @@ fun NightResult(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     BackAppButton(
-                        icon = Icons.Default.Clear
+                        icon = Icons.Default.Clear,
+                        title = "Gece Sonu"
                     ) {
                         viewModel.clearRoom()
                         navController.navigate(Routes.DASHBOARD.name)
                     }
                 }
-                Text("Death", fontSize = 24.sp)
+                Text(
+                    "Öldün Çık",
+                    fontSize = 24.sp,
+                    color = Color.White,
+                    fontFamily = Prociono,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                    )
                 Spacer(modifier = Modifier.padding(top = 16.dp))
                 PlayerItem(mostBited)
                 NextButton(
-                    "Next Day"
+                    "Sonraki Gün"
                 ) {
                     if (villagerCount == vampireCount) {
                         navController.navigate(Routes.ENDING.name)
@@ -92,7 +103,7 @@ fun PlayerItem(
             contentDescription = "",
             modifier = Modifier.padding(8.dp)
         )
-        Text(player.name)
+        Text(player.name, fontSize = 18.sp, color = Color.White, fontFamily = Prociono)
     }
 }
 

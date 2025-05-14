@@ -35,12 +35,12 @@ class EndingViewModel @Inject constructor(
             var villager = 0
             playerDao.getAllPlayers().forEach { player ->
                 if(player.isAlive){
-                    if(player.role == "Vampire") vampire++
+                    if(player.role == "Vampir") vampire++
                     else villager++
                 }
             }
-            if(vampire == 0) _winnerType.value.copy(name = "Villager")
-            else _winnerType.value.copy(name = "Vampire")
+            if(vampire == 0) _winnerType.value.copy(name = "Köylü")
+            else _winnerType.value.copy(name = "Vampir")
             _isLoaded.value = true
         }
     }

@@ -68,7 +68,7 @@ fun VoteScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Row(modifier = Modifier.fillMaxWidth()) {
-                    BackAppButton(icon = Icons.Default.Clear) {
+                    BackAppButton(icon = Icons.Default.Clear, title = "Oylama") {
                         viewModel.clearRoom()
                         navController.navigate(Routes.DASHBOARD.name)
                     }
@@ -82,7 +82,7 @@ fun VoteScreen(
                 }
 
                 NextButton(
-                    buttonText = "Vote"
+                    buttonText = "Mührü Vur"
                 ) {
                     viewModel.addVote(selectedPlayer)
 
@@ -109,6 +109,7 @@ fun VoteInfos(
     Text(
         player.name,
         fontSize = 24.sp,
+        color = Color.White,
         modifier = Modifier.padding(16.dp)
     )
     Image(
@@ -161,7 +162,9 @@ fun PlayerAvatar(
                 onSelect(player)
             }
     ) {
-        Column {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Image(
                 painter = painterResource(player.image),
                 contentDescription = "",
@@ -169,10 +172,8 @@ fun PlayerAvatar(
                     .padding(8.dp)
             )
             Text(
-                player.name
-            )
-            Text(
-                player.role
+                player.name,
+                color = Color.White
             )
         }
     }

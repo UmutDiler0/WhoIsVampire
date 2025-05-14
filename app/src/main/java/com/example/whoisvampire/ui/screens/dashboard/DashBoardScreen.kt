@@ -40,7 +40,6 @@ fun DashBoardScreen(
     navController: NavController
 ){
     Box(modifier = Modifier.fillMaxSize()){
-
         BackGroundGradinet()
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -95,7 +94,7 @@ fun DashBoardScreen(
                     )
             ) {
                 Text(
-                    text = "New Game",
+                    text = "Yeni Oyun",
                     fontSize = 32.sp,
                     color = colorResource(R.color.button_color),
                     maxLines = 1,

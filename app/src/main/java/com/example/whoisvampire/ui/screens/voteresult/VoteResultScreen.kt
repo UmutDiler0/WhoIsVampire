@@ -14,7 +14,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.whoisvampire.common.component.BackAppButton
@@ -34,7 +36,7 @@ fun VoteResult(
     var villagerCount = 0
     playerList.forEach {
         if(it.isAlive){
-            if(it.role == "Vampire") vampireCount++
+            if(it.role == "Vampir") vampireCount++
             else villagerCount++
         }
     }
@@ -49,15 +51,16 @@ fun VoteResult(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 BackAppButton(
-                    icon = Icons.Default.Clear
+                    icon = Icons.Default.Clear,
+                    title = "Oylama Sonucu"
                 ) {
                     navController.navigate(Routes.DASHBOARD.name)
                 }
             }
-            Text("Death")
+            Text("Öldün Çık", fontSize = 20.sp, color = Color.White)
             PlayerInfo(player)
             NextButton(
-                "Next Day"
+                "Sonraki Gün"
             ) {
                 if (villagerCount == vampireCount) {
                     navController.navigate(Routes.ENDING.name)
@@ -73,11 +76,13 @@ fun VoteResult(
 fun PlayerInfo(
     player: Player
 ){
-    Column {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Image(
             painter = painterResource(player.image),
             contentDescription = ""
         )
-        Text(player.name)
+        Text(player.name, fontSize = 24.sp, color = Color.White)
     }
 }
