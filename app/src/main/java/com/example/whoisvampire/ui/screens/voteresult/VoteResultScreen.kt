@@ -8,10 +8,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,44 +32,46 @@ fun VoteResult(
     navController: NavController
 ){
     val viewModel: VoteResultVM = hiltViewModel()
-    val player by viewModel.player.collectAsState()
-    val playerList by viewModel.playerList.collectAsState()
-    var vampireCount = 0
-    var villagerCount = 0
-    playerList.forEach {
-        if(it.isAlive){
-            if(it.role == "Vampir") vampireCount++
-            else villagerCount++
-        }
-    }
-    Box{
-        BackGroundGradinet()
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
+    val isListLoaded by viewModel.isListLoaded.collectAsState()
+
+    if (isListLoaded) {
+        val player by viewModel.player.collectAsState()
+        val playerList by viewModel.playerList.collectAsState()
+
+        val vampireCount = playerList.count { it.isAlive && it.role == "Vampir" }
+        val villagerCount = playerList.count { it.isAlive && it.role != "Vampir" }
+
+        Box {
+            BackGroundGradinet()
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                BackAppButton(
-                    icon = Icons.Default.Clear,
-                    title = "Oylama Sonucu"
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    navController.navigate(Routes.DASHBOARD.name)
+                    BackAppButton(
+                        icon = Icons.Default.Clear,
+                        title = "Oylama Sonucu"
+                    ) {
+                        navController.navigate(Routes.DASHBOARD.name)
+                    }
+                }
+                Text("Öldün Çık", fontSize = 20.sp, color = Color.White)
+                PlayerInfo(player)
+                NextButton("Sonraki Gün") {
+                    if (vampireCount >= villagerCount || vampireCount == 0) {
+                        navController.navigate(Routes.ENDING.name)
+                    } else {
+                        navController.navigate(Routes.GAMEDURATION.name)
+                    }
                 }
             }
-            Text("Öldün Çık", fontSize = 20.sp, color = Color.White)
-            PlayerInfo(player)
-            NextButton(
-                "Sonraki Gün"
-            ) {
-                if (villagerCount == vampireCount) {
-                    navController.navigate(Routes.ENDING.name)
-                } else {
-                    navController.navigate(Routes.GAMEDURATION.name)
-                }
-            }
+        }
+    } else {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
         }
     }
 }

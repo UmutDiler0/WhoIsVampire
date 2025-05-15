@@ -25,6 +25,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -40,10 +41,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.motionEventSpy
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.whoisvampire.R
@@ -103,14 +106,16 @@ fun RolesScreen(
                     ).show()
                 }
             }
-
+            Spacer(Modifier.padding(top = 32.dp))
             Button(
                 onClick = {
                     viewModel.deleteAllPlayers()
                     navController.navigate(Routes.DASHBOARD.name)
-                }
+                },
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 48.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
             ) {
-                Text("Oyunu sıfırla")
+                Text("Oyunu sıfırla", fontSize = 16.sp, color = Color.White)
             }
         }
     }

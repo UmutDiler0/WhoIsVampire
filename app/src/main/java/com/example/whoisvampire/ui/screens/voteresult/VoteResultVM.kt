@@ -29,12 +29,18 @@ class VoteResultVM @Inject constructor(
     private var _isListLoaded = MutableStateFlow<Boolean>(false)
     val isListLoaded: StateFlow<Boolean> get() = _isListLoaded
 
+    val aliveVampireCount: Int
+        get() = _playerList.value.count { it.isAlive && it.role == "Vampir" }
+
+    val aliveVillagerCount: Int
+        get() = _playerList.value.count { it.isAlive && it.role != "Vampir" }
+
     init {
         viewModelScope.launch {
 
             _playerList.value = playerDao.getAllPlayers()
             _playerList.value.forEach { player ->
-                if(player.voteCount > _player.value.voteCount && !player.isAlive){
+                if (player.voteCount > _player.value.voteCount && !player.isAlive) {
                     _player.value = player
                 }
             }

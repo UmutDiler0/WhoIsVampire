@@ -2,6 +2,7 @@ package com.example.whoisvampire.ui.screens.ending
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.whoisvampire.R
 import com.example.whoisvampire.data.model.Player
 import com.example.whoisvampire.data.model.Roles
 import com.example.whoisvampire.data.service.PlayerDao
@@ -33,21 +34,41 @@ class EndingViewModel @Inject constructor(
         viewModelScope.launch {
             var vampire = 0
             var villager = 0
-            playerDao.getAllPlayers().forEach { player ->
-                if(player.isAlive){
-                    if(player.role == "Vampir") vampire++
-                    else villager++
-                }
+
+            val alivePlayers = playerDao.getAllPlayers().filter { it.isAlive }
+
+            alivePlayers.forEach { player ->
+                if (player.role == "Vampir") vampire++
+                else villager++
             }
-            if(vampire == 0) _winnerType.value.copy(name = "Köylü")
-            else _winnerType.value.copy(name = "Vampir")
+
+            _winnerType.value = if (villager > vampire) {
+                Roles(name = "Köylü", count = villager, image = R.drawable.villager)
+            } else {
+                Roles(name = "Vampir", count = vampire, image = R.drawable.vampir)
+            }
+
+            _winnerList.value = alivePlayers.filter {
+                it.role == _winnerType.value.name
+            }
+
             _isLoaded.value = true
         }
     }
 
     fun resetGame(){
         viewModelScope.launch {
-            playerDao.deleteAllPlayers()
+            val playerList = playerDao.getAllPlayers()
+            playerList.forEach {
+                if(it.name != "") {
+                    it.isAlive = true
+                    it.biteCount = 0
+                    it.voteCount = 0
+                    it.selectedBy = ""
+                    it.selectCount = 0
+                    playerDao.updatePlayer(it)
+                }
+            }
             settingDao.deleteAllSettings()
             roleDao.deleteAllRoles()
         }

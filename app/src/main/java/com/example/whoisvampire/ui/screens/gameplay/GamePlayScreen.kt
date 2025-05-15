@@ -220,7 +220,7 @@ fun OtherPlayersItem(
             )
             Text(player.name, color = Color.White, fontSize = 16.sp)
             Text(
-                if(player.role == "Vampire") player.role
+                if(player.role == "Vampir") player.role
                 else "",
                 color = Color.White,
                 fontSize = 16.sp

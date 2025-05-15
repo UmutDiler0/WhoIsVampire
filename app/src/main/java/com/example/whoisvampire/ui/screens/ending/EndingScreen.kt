@@ -3,6 +3,7 @@ package com.example.whoisvampire.ui.screens.ending
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -15,8 +16,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.whoisvampire.R
@@ -40,15 +43,16 @@ fun EndingScreen(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                Spacer(modifier = Modifier.padding(top = 64.dp))
                 Image(
-                    painter = if (winnerRole.name == "Vampire") painterResource(R.drawable.vampir_koylu)
-                    else painterResource(R.drawable.bg_image),
+                    painter = if (winnerRole.name == "Vampir") painterResource(R.drawable.vampir)
+                    else painterResource(R.drawable.villager),
                     contentDescription = "",
                     modifier = Modifier
-                        .size(150.dp)
+                        .size(250.dp)
                         .padding(16.dp)
                 )
-                Text(winnerRole.name, modifier = Modifier.padding(vertical = 24.dp))
+                Text(winnerRole.name, modifier = Modifier.padding(vertical = 24.dp), color = Color.White, fontSize = 24.sp)
                 WinnerList(winnerList)
                 NextButton("Yeni Oyun") {
                     viewModel.resetGame()
@@ -83,6 +87,6 @@ fun WinnerItem(
             painter = painterResource(player.image),
             contentDescription = ""
         )
-        Text(player.name)
+        Text(player.name,color = Color.White, fontSize = 20.sp)
     }
 }

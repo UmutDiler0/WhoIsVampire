@@ -43,7 +43,7 @@ fun NightResult(
     var villagerCount = 0
     playerList.forEach {
         if(it.isAlive){
-            if(it.role == "Vampire") vampireCount++
+            if(it.role == "Vampir") vampireCount++
             else villagerCount++
         }
     }
