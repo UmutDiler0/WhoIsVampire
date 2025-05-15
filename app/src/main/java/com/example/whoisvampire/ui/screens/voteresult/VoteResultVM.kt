@@ -43,22 +43,27 @@ class VoteResultVM @Inject constructor(
 
             val alivePlayers = players.filter { it.isAlive }
 
+            // En yüksek oyu bul
             val maxVote = alivePlayers.maxOfOrNull { it.voteCount } ?: 0
 
+            // Bu oyu alan kaç kişi var?
             val topVotedPlayers = alivePlayers.filter { it.voteCount == maxVote }
 
-            if (topVotedPlayers.size == 1) {
-                val votedOutPlayer = topVotedPlayers.first()
-                votedOutPlayer.isAlive = false
+            // Eğer sadece 1 kişi aldıysa -> onu öldür
+            if (maxVote > 0 && topVotedPlayers.size == 1) {
+                val votedOutPlayer = topVotedPlayers.first().copy(isAlive = false)
                 playerDao.updatePlayer(votedOutPlayer)
                 _player.value = votedOutPlayer
             } else {
+                // Eşitlik var ya da hiç oy kullanılmadıysa -> kimse ölmesin
                 _player.value = Player.empty()
             }
+            _playerList.value -= topVotedPlayers
 
             _isListLoaded.value = true
         }
     }
+
 
 
 

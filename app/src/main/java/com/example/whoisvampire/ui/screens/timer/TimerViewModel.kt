@@ -23,6 +23,7 @@ class TimerViewModel @Inject constructor(
                 it.isProtected = false
                 it.voteCount = 0
                 it.biteCount = 0
+                playerDao.updatePlayer(it)
             }
         }
     }

@@ -44,7 +44,4 @@ class GameDurationVM @Inject constructor(
             settingDao.deleteAllSettings()
         }
     }
-
-
-
 }

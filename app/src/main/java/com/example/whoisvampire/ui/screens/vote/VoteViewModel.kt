@@ -60,7 +60,7 @@ class VoteViewModel @Inject constructor(
             _playerList.value = allPlayers
             _newPlayerList.value = allPlayers.filter { it.isAlive }
             _isListLoaded.value = true
-            getCurrentPlayer(_playerNumber.value) // İlk oyuncuyu burada yükle
+            getCurrentPlayer(_playerNumber.value)
         }
     }
 
