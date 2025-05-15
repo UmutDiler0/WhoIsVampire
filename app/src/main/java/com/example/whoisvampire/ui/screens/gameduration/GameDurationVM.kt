@@ -3,6 +3,7 @@ package com.example.whoisvampire.ui.screens.gameduration
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.whoisvampire.common.util.settingsList
 import com.example.whoisvampire.data.model.Player
 import com.example.whoisvampire.data.model.Roles
@@ -27,6 +28,13 @@ class GameDurationVM @Inject constructor(
     val isLoaded = _isLoaded
 
     init {
+        viewModelScope.launch {
+            playerDao.getAllPlayers().forEach {
+                it.voteCount = 0
+                it.isProtected = false
+                it.biteCount = 0
+            }
+        }
         _isLoaded.value = true
     }
 

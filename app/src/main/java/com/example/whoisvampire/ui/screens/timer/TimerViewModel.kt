@@ -17,6 +17,16 @@ class TimerViewModel @Inject constructor(
     private val settingDao: SettingDao,
 ): ViewModel(){
 
+    init {
+        viewModelScope.launch {
+            playerDao.getAllPlayers().forEach {
+                it.isProtected = false
+                it.voteCount = 0
+                it.biteCount = 0
+            }
+        }
+    }
+
     fun clearRoom(){
         viewModelScope.launch {
             roleDao.deleteAllRoles()

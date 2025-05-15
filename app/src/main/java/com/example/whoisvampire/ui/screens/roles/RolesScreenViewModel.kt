@@ -67,7 +67,7 @@ class RolesScreenViewModel @Inject constructor(
         val vampirCount = currentList.find { it.name.equals("Vampir", ignoreCase = true) }?.count ?: 0
         val othersCount = totalRoles - vampirCount
 
-        _isNavAvailable.value = vampirCount < othersCount && totalRoles == playerCount
+        _isNavAvailable.value = vampirCount < othersCount && totalRoles == playerCount && vampirCount != 0
     }
 
     fun matchPlayerWithRoles() {

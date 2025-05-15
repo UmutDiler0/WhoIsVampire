@@ -62,14 +62,12 @@ class GamePlayViewModel @Inject constructor(
     fun selectedBy(choosingPlayer: Player){
         viewModelScope.launch {
             _selectedPlayer.value?.let {
-                it.selectedBy = choosingPlayer.name
-                it.biteCount++
+                if(choosingPlayer.role == "Vampir") it.biteCount++
+                else if(choosingPlayer.role == "Şifacı") it.isProtected = true
                 playerDao.updatePlayer(it)
             }
         }
     }
-
-
 
     fun getPlayer(id: Int){
         viewModelScope.launch {

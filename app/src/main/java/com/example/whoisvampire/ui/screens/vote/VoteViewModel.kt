@@ -52,6 +52,11 @@ class VoteViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             val allPlayers = playerDao.getAllPlayers()
+            allPlayers.forEach {
+                it.voteCount = 0
+                it.isProtected = false
+                it.biteCount = 0
+            }
             _playerList.value = allPlayers
             _newPlayerList.value = allPlayers.filter { it.isAlive }
             _isListLoaded.value = true

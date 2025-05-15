@@ -10,6 +10,7 @@ import com.example.whoisvampire.data.service.SettingDao
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.forEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -37,17 +38,28 @@ class VoteResultVM @Inject constructor(
 
     init {
         viewModelScope.launch {
+            val players = playerDao.getAllPlayers()
+            _playerList.value = players
 
-            _playerList.value = playerDao.getAllPlayers()
-            _playerList.value.forEach { player ->
-                if (player.voteCount >= _player.value.voteCount && !player.isAlive) {
-                    if(player.voteCount == _player.value.voteCount) _player.value = Player.empty()
-                    else _player.value = player
-                }
+            val alivePlayers = players.filter { it.isAlive }
+
+            val maxVote = alivePlayers.maxOfOrNull { it.voteCount } ?: 0
+
+            val topVotedPlayers = alivePlayers.filter { it.voteCount == maxVote }
+
+            if (topVotedPlayers.size == 1) {
+                val votedOutPlayer = topVotedPlayers.first()
+                votedOutPlayer.isAlive = false
+                playerDao.updatePlayer(votedOutPlayer)
+                _player.value = votedOutPlayer
+            } else {
+                _player.value = Player.empty()
             }
+
             _isListLoaded.value = true
         }
     }
+
 
 
 }

@@ -250,7 +250,8 @@ fun PlayerActionButton(
     val currentPlayer by viewModel.player.collectAsState()
     val selectedPlayer by viewModel.selectedPlayer.collectAsState()
     val allPlayer by viewModel.allPlayer.collectAsState()
-    val isLastPerson = allPlayer.last() == currentPlayer
+    val alivePlayers = allPlayer.filter { it.isAlive }
+    val isLastPerson = alivePlayers.lastOrNull() == currentPlayer
     val localContext = LocalContext.current
     val playerList by viewModel.playerList.collectAsState()
 
@@ -313,7 +314,7 @@ fun PlayerActionButton(
                 if (selectedPlayer == null) {
                     Toast.makeText(localContext, "Lütfen Oyuncu Seç", Toast.LENGTH_SHORT).show()
                 } else {
-                    lockedSelectedPlayer = selectedPlayer // Seçilen oyuncu kilitlenir
+                    lockedSelectedPlayer = selectedPlayer
                     showRole = true
                     Toast.makeText(
                         localContext,

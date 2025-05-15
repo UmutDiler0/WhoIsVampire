@@ -123,6 +123,7 @@ fun PlayerAvatar(
             contentDescription = "",
             modifier = Modifier
                 .padding(8.dp)
+                .size(100.dp)
                 .clickable {
                     navController.navigate(Routes.PLAYERDETAIL.name + "/$id")
                     Log.i("PlayerId", player.id.toString())

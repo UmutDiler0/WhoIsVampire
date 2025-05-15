@@ -66,6 +66,7 @@ class EndingViewModel @Inject constructor(
                     it.voteCount = 0
                     it.selectedBy = ""
                     it.selectCount = 0
+                    it.isProtected = false
                     playerDao.updatePlayer(it)
                 }
             }

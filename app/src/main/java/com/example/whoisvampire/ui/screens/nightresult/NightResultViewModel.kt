@@ -32,15 +32,35 @@ class NightResultViewModel @Inject constructor(
         viewModelScope.launch {
             var biteCount = 0
             _playerList.value = playerDao.getAllPlayers()
+
+            var mostBited: Player? = null
+
             _playerList.value.forEach { player ->
-                if(player.biteCount > biteCount) {
-                    _mostBitedPlayer.value = player
-                    player.isAlive = false
-                    playerDao.updatePlayer(player)
+                if (player.biteCount > biteCount && player.isAlive) {
+                    biteCount = player.biteCount
+                    mostBited = player
                 }
             }
+
+            mostBited?.let { player ->
+                if (!player.isProtected) {
+                    player.isAlive = false
+                    playerDao.updatePlayer(player)
+                    _mostBitedPlayer.value = player
+                } else {
+                    _mostBitedPlayer.value = Player.empty()
+                }
+            }
+
             _playerList.value = playerDao.getAllPlayers()
             _isListLoaded.value = true
+        }
+    }
+
+
+    fun clearProtection(){
+        _playerList.value.forEach {
+            it.isProtected = false
         }
     }
 

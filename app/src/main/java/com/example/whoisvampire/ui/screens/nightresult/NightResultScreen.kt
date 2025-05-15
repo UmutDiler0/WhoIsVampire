@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.whoisvampire.R
 import com.example.whoisvampire.common.component.BackAppButton
 import com.example.whoisvampire.common.component.BackGroundGradinet
 import com.example.whoisvampire.common.component.NextButton
@@ -65,7 +66,8 @@ fun NightResult(
                     }
                 }
                 Text(
-                    "Öldün Çık",
+                    if(mostBited.name.isNotBlank()) "Öldün Çık"
+                    else "Şifacı Harika Bir İş Çıkardı",
                     fontSize = 24.sp,
                     color = Color.White,
                     fontFamily = Prociono,
@@ -80,6 +82,7 @@ fun NightResult(
                     if (villagerCount == vampireCount) {
                         navController.navigate(Routes.ENDING.name)
                     } else {
+                        viewModel.clearProtection()
                         navController.navigate(Routes.TIMERSCREEN.name)
                     }
                 }
@@ -98,12 +101,21 @@ fun PlayerItem(
             .padding(horizontal = 16.dp, vertical = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Image(
-            painter = painterResource(player.image),
-            contentDescription = "",
-            modifier = Modifier.padding(8.dp)
-        )
-        Text(player.name, fontSize = 18.sp, color = Color.White, fontFamily = Prociono)
+        if(player.name.isNotBlank()){
+            Image(
+                painter = painterResource(player.image),
+                contentDescription = "",
+                modifier = Modifier.padding(8.dp)
+            )
+            Text(player.name, fontSize = 18.sp, color = Color.White, fontFamily = Prociono)
+        }else{
+            Image(
+                painter = painterResource(R.drawable.sifaci),
+                contentDescription = "",
+                modifier = Modifier.padding(8.dp)
+            )
+            Text("Şifacı Taşıdı", fontSize = 18.sp, color = Color.White, fontFamily = Prociono)
+        }
     }
 }
 
