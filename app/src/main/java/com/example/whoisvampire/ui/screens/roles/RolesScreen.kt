@@ -93,7 +93,7 @@ fun RolesScreen(
             NextButton {
                 if (isNavAvailable) {
                     viewModel.saveRolesToDatabase {
-                        // Kayıt tamamlandığında bu blok çalışır
+                        viewModel.matchPlayerWithRoles()
                         navController.navigate(Routes.GAMEDURATION.name) {
                             popUpTo(Routes.ROLES.name) { inclusive = true }
                         }
@@ -144,7 +144,6 @@ fun RolesItem(
     val gameRoleList by viewModel.gameRoleList.collectAsState()
     val totalNumber by viewModel.totalRoleNumber.collectAsState()
 
-    // İlgili rolün mevcut count bilgisini ViewModel'dan al
     val currentCount = gameRoleList.find { it.name == role.name }?.count ?: 0
 
     LaunchedEffect(totalNumber) {

@@ -52,6 +52,8 @@ import com.example.whoisvampire.data.model.Player
 import com.example.whoisvampire.ui.routes.Routes
 import com.example.whoisvampire.ui.textstyles.PrincessSofia
 import com.example.whoisvampire.ui.textstyles.Prociono
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 
 @Composable
 fun GamePlayScreen(
@@ -100,7 +102,9 @@ fun PlayerInfos(
     )
     Image(
         painter = if (player.role == "Vampir") painterResource(R.drawable.vampir)
-        else painterResource(R.drawable.villager),
+            else if(player.role == "Şifacı") painterResource(R.drawable.sifaci)
+            else if(player.role == "Gözcü") painterResource(R.drawable.gozcu)
+            else painterResource(R.drawable.villager),
         contentDescription = "",
         contentScale = ContentScale.Crop,
         modifier = Modifier
@@ -150,21 +154,21 @@ fun PlayerInfos(
         }
 
         "Vampir" -> {
-            OtherPlayersView(playerList, viewModel)
+            OtherPlayersView(player,playerList, viewModel)
             PlayerActionButton("Isır", viewModel, navController) {
                 navController.popBackStack()
             }
         }
 
         "Gözcü" -> {
-            OtherPlayersView(playerList, viewModel)
-            PlayerActionButton("Rolü Gör", viewModel, navController) {
+            OtherPlayersView(player,playerList, viewModel)
+            PlayerActionButton("Geç", viewModel, navController) {
                 navController.popBackStack()
             }
         }
 
         "Şifacı" -> {
-            OtherPlayersView(playerList, viewModel)
+            OtherPlayersView(player,playerList, viewModel)
             PlayerActionButton("Koru", viewModel, navController) {
                 navController.popBackStack()
             }
@@ -174,6 +178,7 @@ fun PlayerInfos(
 
 @Composable
 fun OtherPlayersView(
+    currentPlayer: Player,
     playerList: List<Player>,
     viewModel: GamePlayViewModel
 ) {
@@ -187,6 +192,8 @@ fun OtherPlayersView(
             OtherPlayersItem(
                 player = player,
                 selectedPlayer = selectedPlayer,
+                isVampire =  if(currentPlayer.role == "Vampir") true
+                else false,
                 onPlayerSelected = { viewModel.selectPlayer(it) }
             )
         }
@@ -197,6 +204,7 @@ fun OtherPlayersView(
 fun OtherPlayersItem(
     player: Player,
     selectedPlayer: Player?,
+    isVampire: Boolean,
     onPlayerSelected: (Player) -> Unit
 ) {
     val isSelected = selectedPlayer?.id == player.id
@@ -219,13 +227,15 @@ fun OtherPlayersItem(
                 modifier = Modifier.size(100.dp)
             )
             Text(player.name, color = Color.White, fontSize = 16.sp)
-            Text(
-                if(player.role == "Vampir") player.role
-                else "",
-                color = Color.White,
-                fontSize = 16.sp
-            )
-            if (player.role != "Vampir" && player.selectedBy.isNotBlank()) Text(player.biteCount.toString())
+            if(isVampire){
+                Text(
+                    if (player.role == "Vampir") player.role
+                    else "",
+                    color = Color.White,
+                    fontSize = 16.sp
+                )
+            }
+            if (player.role != "Vampir" && player.selectedBy.isNotBlank()) Text("${player.biteCount/2}")
         }
     }
 }
@@ -243,6 +253,22 @@ fun PlayerActionButton(
     val isLastPerson = allPlayer.last() == currentPlayer
     val localContext = LocalContext.current
     val playerList by viewModel.playerList.collectAsState()
+
+    var showRole by remember { mutableStateOf(false) }
+    var shouldNavigate by remember { mutableStateOf(false) }
+    var lockedSelectedPlayer by remember { mutableStateOf<Player?>(null) } // seçimi kilitlemek için
+
+    if (shouldNavigate) {
+        LaunchedEffect(Unit) {
+            delay(5000L)
+            if (isLastPerson) {
+                navController.navigate(Routes.NIGHTRESULT.name)
+            } else {
+                navController.popBackStack()
+            }
+        }
+    }
+
     var vampireCount = 0
     var villagerCount = 0
     playerList.forEach {
@@ -251,6 +277,7 @@ fun PlayerActionButton(
             else villagerCount++
         }
     }
+
     if (currentPlayer.role == "Köylü") viewModel.selectPlayer(Player.empty())
 
     Button(
@@ -258,24 +285,50 @@ fun PlayerActionButton(
             if (selectedPlayer == null) {
                 Toast.makeText(localContext, "Lütfen Oyuncu Seç", Toast.LENGTH_SHORT).show()
             } else {
+                viewModel.selectedBy(currentPlayer)
+                viewModel.updateRoom(selectedPlayer!!)
+
                 if (isLastPerson) {
-                    viewModel.selectedBy(currentPlayer)
-                    viewModel.updateRoom(selectedPlayer!!)
-
                     navController.navigate(Routes.NIGHTRESULT.name)
-
                 } else {
-                    viewModel.selectedBy(currentPlayer)
-                    viewModel.updateRoom(selectedPlayer!!)
                     onClick()
-
                 }
             }
         },
         colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.button_color)),
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 64.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 64.dp)
     ) {
-        Text(buttonText,color = Color.White)
+        Text(buttonText, color = Color.White)
+    }
+
+    if (showRole) {
+        Text(text = lockedSelectedPlayer?.role ?: "", color = Color.White, fontSize = 24.sp)
+    }
+
+    if (currentPlayer.role == "Gözcü") {
+        Button(
+            onClick = {
+                if (selectedPlayer == null) {
+                    Toast.makeText(localContext, "Lütfen Oyuncu Seç", Toast.LENGTH_SHORT).show()
+                } else {
+                    lockedSelectedPlayer = selectedPlayer // Seçilen oyuncu kilitlenir
+                    showRole = true
+                    Toast.makeText(
+                        localContext,
+                        "Rolü Gördün. 5 saniye sonra diğer ekrana geçilecek",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    shouldNavigate = true
+                }
+            },
+            colors = ButtonDefaults.buttonColors(containerColor = Color.White)
+        ) {
+            Text("Kişinin Rolünü Göster", color = colorResource(R.color.button_color))
+        }
     }
 }
+
+
 

@@ -77,10 +77,7 @@ class VoteViewModel @Inject constructor(
     fun resultOfVote() {
         viewModelScope.launch {
             val mostVotedPlayer = _playerList.value.maxByOrNull { it.voteCount }
-            if (mostVotedPlayer != null) {
-                val updatedPlayer = mostVotedPlayer.copy(isAlive = false)
-                playerDao.updatePlayer(updatedPlayer)
-            }
+            playerDao.updatePlayer(mostVotedPlayer ?: Player.empty())
         }
     }
 

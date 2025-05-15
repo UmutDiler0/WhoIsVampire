@@ -23,16 +23,10 @@ class GameDurationVM @Inject constructor(
     private val settingDao: SettingDao,
 ): ViewModel() {
 
-    private var _playerList = MutableStateFlow<List<Player>>(emptyList())
-    val playerList: StateFlow<List<Player>> get() = _playerList
-
-    private var _gameRoles = MutableStateFlow<List<Roles>>(emptyList())
-
     private var _isLoaded = MutableStateFlow(false)
     val isLoaded = _isLoaded
 
     init {
-           matchPlayerWithRoles()
         _isLoaded.value = true
     }
 
@@ -43,23 +37,6 @@ class GameDurationVM @Inject constructor(
         }
     }
 
-    private fun matchPlayerWithRoles() {
-        viewModelScope.launch {
-            _playerList.value = playerDao.getAllPlayers()
-            _gameRoles.value = roleDao.getAllRoles()
 
-            if (_gameRoles.value.isEmpty()) {
-                Log.e("matchPlayerWithRoles", "Rol listesi boş!")
-                return@launch
-            }
-
-            _playerList.value.forEach { player ->
-                val currentRole = _gameRoles.value.random()
-                _gameRoles.value -= currentRole
-                player.role = currentRole.name
-                playerDao.updatePlayer(player)
-            }
-        }
-    }
 
 }

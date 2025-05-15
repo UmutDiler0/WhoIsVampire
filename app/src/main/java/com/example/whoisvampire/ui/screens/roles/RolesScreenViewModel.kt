@@ -1,5 +1,6 @@
 package com.example.whoisvampire.ui.screens.roles
 
+import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -67,6 +68,25 @@ class RolesScreenViewModel @Inject constructor(
         val othersCount = totalRoles - vampirCount
 
         _isNavAvailable.value = vampirCount < othersCount && totalRoles == playerCount
+    }
+
+    fun matchPlayerWithRoles() {
+        viewModelScope.launch {
+            _playerList.value = playerDao.getAllPlayers()
+            _gameRoleList.value = roleDao.getAllRoles()
+
+            if (_gameRoleList.value.isEmpty()) {
+                Log.e("matchPlayerWithRoles", "Rol listesi boş!")
+                return@launch
+            }
+
+            _playerList.value.forEach { player ->
+                val currentRole = _gameRoleList.value.random()
+                _gameRoleList.value -= currentRole
+                player.role = currentRole.name
+                playerDao.updatePlayer(player)
+            }
+        }
     }
 
     fun saveRolesToDatabase(onComplete: () -> Unit = {}) {

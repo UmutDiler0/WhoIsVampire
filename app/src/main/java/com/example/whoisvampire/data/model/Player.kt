@@ -16,6 +16,7 @@ data class Player(
     var selectedBy: String = "",
     var selectCount: Int = 0,
     var isAlive: Boolean = true,
+    var isProtected: Boolean = false
 ){
     companion object{
         fun empty(): Player{

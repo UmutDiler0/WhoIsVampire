@@ -14,7 +14,7 @@ import javax.inject.Singleton
 
 @Database(
     entities = [Player::class, Roles::class, Settings::class, Game::class],
-    version = 10,
+    version = 11,
     exportSchema = false
 )
 @Singleton

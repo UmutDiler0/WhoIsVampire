@@ -40,8 +40,9 @@ class VoteResultVM @Inject constructor(
 
             _playerList.value = playerDao.getAllPlayers()
             _playerList.value.forEach { player ->
-                if (player.voteCount > _player.value.voteCount && !player.isAlive) {
-                    _player.value = player
+                if (player.voteCount >= _player.value.voteCount && !player.isAlive) {
+                    if(player.voteCount == _player.value.voteCount) _player.value = Player.empty()
+                    else _player.value = player
                 }
             }
             _isListLoaded.value = true
