@@ -96,9 +96,9 @@ fun CountdownTimerScreen(
         modifier = Modifier
             .fillMaxSize()
             .padding(24.dp),
-        verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Spacer(modifier = Modifier.padding(top = 32.dp))
         Text(text = formattedTime, fontSize = 64.sp, fontWeight = FontWeight.Bold, color = Color.White)
 
         Spacer(modifier = Modifier.height(16.dp))

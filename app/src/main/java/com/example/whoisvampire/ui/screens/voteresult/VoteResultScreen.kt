@@ -67,6 +67,7 @@ fun VoteResult(
                     if (vampireCount >= villagerCount || vampireCount == 0) {
                         navController.navigate(Routes.ENDING.name)
                     } else {
+                        viewModel.updateRoom()
                         navController.navigate(Routes.GAMEDURATION.name)
                     }
                 }

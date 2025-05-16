@@ -60,6 +60,16 @@ class VoteResultVM @Inject constructor(
         }
     }
 
+    fun updateRoom(){
+        viewModelScope.launch{
+            playerDao.getAllPlayers().forEach {
+                it.voteCount = 0
+                it.biteCount = 0
+                it.isProtected = false
+            }
+        }
+    }
+
 
 
 
